@@ -175,9 +175,9 @@ impl<T: AsRef<[u8]>> AddressRecord<T> {
         Self { buffer }
     }
 
-    /// Shorthand for a combination of [new] and [check_len].
+    /// Shorthand for a combination of [new_unchecked] and [check_len].
     ///
-    /// [new]: #method.new
+    /// [new_unchecked]: #method.new_unchecked
     /// [check_len]: #method.check_len
     pub fn new_checked(buffer: T) -> Result<Self> {
         let packet = Self::new(buffer);
@@ -325,7 +325,7 @@ mod test {
 
     #[test]
     fn test_query_deconstruct() {
-        let packet = Packet::new(&QUERY_PACKET_BYTES[..]);
+        let packet = Packet::new_unchecked(&QUERY_PACKET_BYTES[..]);
         assert_eq!(packet.msg_type(), Message::MldQuery);
         assert_eq!(packet.msg_code(), 0);
         assert_eq!(packet.checksum(), 0x7374);
@@ -342,7 +342,7 @@ mod test {
     #[test]
     fn test_query_construct() {
         let mut bytes = vec![0xff; 44];
-        let mut packet = Packet::new(&mut bytes[..]);
+        let mut packet = Packet::new_unchecked(&mut bytes[..]);
         packet.set_msg_type(Message::MldQuery);
         packet.set_msg_code(0);
         packet.set_max_resp_code(0x0400);
@@ -360,7 +360,7 @@ mod test {
 
     #[test]
     fn test_record_deconstruct() {
-        let packet = Packet::new(&REPORT_PACKET_BYTES[..]);
+        let packet = Packet::new_unchecked(&REPORT_PACKET_BYTES[..]);
         assert_eq!(packet.msg_type(), Message::MldReport);
         assert_eq!(packet.msg_code(), 0);
         //assert_eq!(packet.checksum(), 0x7374);
@@ -377,7 +377,7 @@ mod test {
     #[test]
     fn test_record_construct() {
         let mut bytes = vec![0xff; 44];
-        let mut packet = Packet::new(&mut bytes[..]);
+        let mut packet = Packet::new_unchecked(&mut bytes[..]);
         packet.set_msg_type(Message::MldReport);
         packet.set_msg_code(0);
         packet.clear_reserved();
